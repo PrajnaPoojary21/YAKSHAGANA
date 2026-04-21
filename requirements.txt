@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+streamlit
+faster-whisper
+openai
+python-dotenv
+python-multipart
+loguru
+requests
