@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio Recognition</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="left">
+    <i class="ri-arrow-left-line"></i>
+    <span onclick="goToHome()">Back to Home</span>
+  </div>
+
+  <div class="right">
+    <i class="ri-settings-3-line"></i>
+    <span>✨ Audio Recognition</span>
+  </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<div class="wrapper">
+
+  <div class="card">
+
+    <h1>Upload or Record Yakshagana Audio</h1>
+
+    <!-- YOUTUBE SECTION -->
+    <div class="youtube-box">
+
+      <div class="youtube-title">
+        <i class="ri-youtube-fill"></i>
+        <span>Extract from YouTube</span>
+      </div>
+
+      <div class="youtube-input">
+        <input type="text" placeholder="Paste YouTube URL here..." />
+        <button class="extract-btn">
+          <i class="ri-download-2-line"></i> Extract
+        </button>
+      </div>
+
+      <p class="note">
+        Note: YouTube extraction requires backend support (see setup instructions)
+      </p>
+
+    </div>
+
+    <!-- UPLOAD + RECORD -->
+    <div class="grid">
+
+      <!-- Upload -->
+      <div class="box">
+        <div class="circle orange">
+          <i class="ri-upload-2-line"></i>
+        </div>
+
+        <h3>Upload Audio File</h3>
+        <p>Click or drag & drop audio file</p>
+        <small>MP3, WAV, OGG, M4A, WEBM</small>
+
+        <input type="file" id="audioFile">
+      </div>
+
+      <!-- Record -->
+      <div class="box">
+        <div class="circle pink">
+          <i class="ri-mic-line"></i>
+        </div>
+
+        <h3>Record Audio</h3>
+        <p>Record Yakshagana performance</p>
+
+        <button class="record-btn">Start Recording</button>
+      </div>
+
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="audioPlayer" controls></audio>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions">
+      <button class="reset">Reset</button>
+
+      <button class="primary-btn" onclick="goToResult()">
+        ✨ Recognize & Extract Story
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
