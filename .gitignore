@@ -37,4 +37,7 @@ Thumbs.db
 .vscode/
 
 # 🔐 Secrets
-.env
+..env
+audio_temp/
+__pycache__/
+*.pyc
