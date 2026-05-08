@@ -9,41 +9,38 @@
 <body>
 
 <header class="topbar">
-  <!-- ✅ CORRECT BACK -->
-  <span onclick="goToHome()">← Back to Home</span>
+  <span onclick="goToHome()" style="cursor:pointer;">← Back to Home</span>
   <div>Result</div>
 </header>
 
 <section class="result-section">
 
- <!-- PADYA -->
-<div class="result-card">
-  <div class="card-title">
-    <div class="icon-box orange">
-      <i class="ri-headphone-line"></i>
+  <!-- RECOGNIZED PADYA -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon-box orange">
+        <i class="ri-headphone-line"></i>
+      </div>
+      <span>Recognized Padya</span>
     </div>
-    <span>Recognized Padya</span>
-  </div>
-
-  <div class="card-content yellow">
-    
-  </div>
-</div>
-
-<!-- STORY -->
-<div class="result-card">
-  <div class="card-title">
-    <div class="icon-box pink">
-      <i class="ri-book-open-line"></i>
+    <div class="card-content yellow">
+      <!-- Populated by script.js -->
     </div>
-    <span>Narrative Story</span>
   </div>
 
-  <div class="card-content red">
-    
+  <!-- NARRATIVE STORY -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon-box pink">
+        <i class="ri-book-open-line"></i>
+      </div>
+      <span>Narrative Story</span>
+    </div>
+    <div class="card-content red">
+      <!-- Populated by script.js -->
+    </div>
   </div>
-</div>
-  <!-- ✅ CORRECT LINK -->
+
   <button class="primary-btn" onclick="goToUpload()">
     Process Another Audio
   </button>
