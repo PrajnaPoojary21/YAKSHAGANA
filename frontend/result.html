@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Result</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <span onclick="goToHome()" style="cursor:pointer;">← Back to Home</span>
+  <div>Result</div>
+</header>
+
+<section class="result-section">
+
+  <!-- RECOGNIZED PADYA -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon-box orange">
+        <i class="ri-headphone-line"></i>
+      </div>
+      <span>Recognized Padya</span>
+    </div>
+    <div class="card-content yellow">
+      <!-- Populated by script.js -->
+    </div>
+  </div>
+
+  <!-- NARRATIVE STORY -->
+  <div class="result-card">
+    <div class="card-title">
+      <div class="icon-box pink">
+        <i class="ri-book-open-line"></i>
+      </div>
+      <span>Narrative Story</span>
+    </div>
+    <div class="card-content red">
+      <!-- Populated by script.js -->
+    </div>
+  </div>
+
+  <button class="primary-btn" onclick="goToUpload()">
+    Process Another Audio
+  </button>
+
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>

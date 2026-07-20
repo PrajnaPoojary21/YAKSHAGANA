@@ -1,0 +1,43 @@
+# 🐍 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# 🧪 Virtual Environment
+venv/
+.env/
+.env
+
+# 🧠 Whisper / Model Cache
+*.pt
+*.bin
+.cache/
+~/.cache/
+
+# 🎧 Audio Files
+*.wav
+*.mp3
+*.flac
+audio_temp/
+
+# 📁 Dataset (optional - if large)
+# Uncomment if dataset is big
+# dataset/
+
+# 🧾 Logs
+*.log
+
+# 💻 OS Files
+.DS_Store
+Thumbs.db
+
+# 🧰 VS Code
+.vscode/
+
+# 🔐 Secrets
+..env
+audio_temp/
+__pycache__/
+*.pyc
