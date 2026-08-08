@@ -8,8 +8,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
+
+##client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+api_key = os.getenv("GROQ_API_KEY")
+
+print("[INFO] Groq API Key Loaded:", bool(api_key))
+print("[INFO] API Key Prefix:", api_key[:8] + "..." if api_key else "Not Found")
+
+client = Groq(api_key=api_key)
 
 def preprocess_audio(input_path):
     print(f"[PREPROCESS] Loading: {input_path}")
@@ -47,7 +55,19 @@ def transcribe_audio(file_path):
     try:
         cleaned_path = preprocess_audio(file_path)
 
-        print("[TRANSCRIBE] Sending to Groq Whisper large-v3...")
+       ## print("[TRANSCRIBE] Sending to Groq Whisper large-v3...")
+       ## with open(cleaned_path, "rb") as audio_file:
+         ##   transcription = client.audio.transcriptions.create(
+           ##     file=(os.path.basename(cleaned_path), audio_file.read()),
+             ##   model="whisper-large-v3",
+               ## language="kn",
+               ## response_format="verbose_json",
+               ## prompt="ಯಕ್ಷಗಾನ ಭಾಗವತಿಕೆ ಪದ್ಯ"
+         ##   )
+       
+        print("[INFO] Calling Groq API...")
+        print("[INFO] Model: whisper-large-v3")
+
         with open(cleaned_path, "rb") as audio_file:
             transcription = client.audio.transcriptions.create(
                 file=(os.path.basename(cleaned_path), audio_file.read()),
@@ -55,7 +75,9 @@ def transcribe_audio(file_path):
                 language="kn",
                 response_format="verbose_json",
                 prompt="ಯಕ್ಷಗಾನ ಭಾಗವತಿಕೆ ಪದ್ಯ"
-            )
+          )
+
+        print("[INFO] Response received successfully from Groq")
 
         final_text = transcription.text.strip()
         print(f"[TRANSCRIBE] FINAL TEXT: '{final_text}'")

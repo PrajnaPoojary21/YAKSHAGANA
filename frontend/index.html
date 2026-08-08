@@ -8,7 +8,8 @@
 </head>
 <body>
 
-<section class="hero">
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero" id="home">
   <div class="hero-container">
 
     <div class="hero-left">
@@ -17,12 +18,11 @@
       <h1>Yakshagana <br><span>Katha Vaani</span></h1>
 
       <p>
-        Transform traditional Yakshagana padya into vivid narrative stories 
+        Transform traditional Yakshagana padya into vivid narrative stories
         through advanced audio recognition.
       </p>
 
-      <!-- ✅ CORRECT LINK -->
-      <button class="primary-btn" onclick="goToHow()">
+      <button class="primary-btn" onclick="goToUpload()">
         <i class="ri-music-2-line"></i>
         Start Recognition
         <i class="ri-arrow-right-line"></i>
@@ -31,7 +31,6 @@
       <div class="stats">
         <div><h3>100+</h3><p>Padya Samples</p></div>
         <div><h3>100+</h3><p>Story Narratives</p></div>
-        <!-- <div><h3>95%</h3><p>Accuracy</p></div> -->
       </div>
     </div>
 
@@ -40,6 +39,64 @@
     </div>
 
   </div>
+</section>
+
+<!-- ═══════════════════════ ABOUT ═══════════════════════ -->
+<section class="about-section" id="about">
+
+  <h1>Preserving Tradition Through Technology</h1>
+
+  <p class="about-text">
+    Yakshagana Katha Vaani bridges centuries of oral storytelling tradition with modern audio recognition
+    technology. Our custom-built dataset and machine learning model preserve the authentic connection
+    between padya verses and their narrative stories, ensuring this cultural heritage remains accessible
+    for generations to come.
+  </p>
+
+  <!-- This button leaves the scrollable page and opens upload.html -->
+  <button class="dark-btn" onclick="goToUpload()">
+    Experience It Now →
+  </button>
+
+</section>
+
+<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section class="how-section" id="how">
+
+  <h1>How It Works</h1>
+
+  <p class="subtext">
+    Our custom-trained model recognizes Yakshagana padya from audio and retrieves the corresponding narrative story.
+  </p>
+
+  <div class="how-cards">
+
+    <div class="how-card">
+      <div class="icon orange">
+        <i class="ri-music-2-line"></i>
+      </div>
+      <h3>Audio Recognition</h3>
+      <p>Upload or record Yakshagana audio with high precision.</p>
+    </div>
+
+    <div class="how-card">
+      <div class="icon red">
+        <i class="ri-database-2-line"></i>
+      </div>
+      <h3>Dataset Matching</h3>
+      <p>Compare extracted text with trained dataset.</p>
+    </div>
+
+    <div class="how-card">
+      <div class="icon pink">
+        <i class="ri-book-open-line"></i>
+      </div>
+      <h3>Story Display</h3>
+      <p>Receive full narrative story preserving tradition.</p>
+    </div>
+
+  </div>
+
 </section>
 
 <script src="script.js"></script>

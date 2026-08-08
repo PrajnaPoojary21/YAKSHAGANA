@@ -16,6 +16,10 @@ venv/
 .cache/
 ~/.cache/
 
+# 🔎 FAISS / Embedding Cache (large, auto-regenerated on first run)
+*.npy
+*.index
+
 # 🎧 Audio Files
 *.wav
 *.mp3
@@ -35,9 +39,3 @@ Thumbs.db
 
 # 🧰 VS Code
 .vscode/
-
-# 🔐 Secrets
-..env
-audio_temp/
-__pycache__/
-*.pyc
