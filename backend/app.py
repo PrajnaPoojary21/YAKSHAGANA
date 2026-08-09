@@ -93,12 +93,20 @@ def transcribe():
         # If cleaned_text is empty but raw_text has something, use raw_text directly
         display_padya = formatted_text if formatted_text.strip() else raw_text
 
-        return jsonify({
+        
+
+
+        response = {
             "raw_text": raw_text,
             "cleaned_text": cleaned_text,
             "formatted_padya": display_padya,
             "story": "ಡೇಟಾಸೆಟ್ ತಯಾರಾದ ನಂತರ ಕಥೆ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ."
-        })
+            }
+        print("API Response:", response)
+        return jsonify(response)
+
+
+
 
     except Exception as e:
         return jsonify({"error": f"Transcription failed: {str(e)}"}), 500
