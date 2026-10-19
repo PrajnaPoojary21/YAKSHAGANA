@@ -215,9 +215,21 @@ async function recognizeAudio() {
     }
 
     // Save results so result.html can read them after navigation
-    sessionStorage.setItem("yaksha_padya", data.formatted_padya || data.cleaned_text || data.raw_text);
+    sessionStorage.setItem("yaksha_padya", data.formatted_padya || data.cleaned_text || data.raw_text || "");
     sessionStorage.setItem("yaksha_story", data.story || "");
     sessionStorage.setItem("yaksha_raw",   data.raw_text || "");
+
+    // ADDED: needed so result.html can tell a confident match apart from a
+    // rejected one -- data.story already holds the right message either
+    // way, but the status/confidence let the UI style them differently
+    // and show a confidence number only when there's an actual match.
+    sessionStorage.setItem("yaksha_match_status", data.match_status || "");
+    sessionStorage.setItem(
+      "yaksha_confidence",
+      (data.match_confidence === null || data.match_confidence === undefined)
+        ? ""
+        : String(data.match_confidence)
+    );
 
     // Go to the result page
     window.location.href = "result.html";
@@ -235,28 +247,406 @@ async function recognizeAudio() {
   }
 }
 
-// ─── RESULT PAGE: POPULATE CARDS (runs on result.html) ─────
-window.addEventListener("DOMContentLoaded", () => {
-  const padyaEl = document.querySelector(".card-content.yellow");
-  const storyEl = document.querySelector(".card-content.red");
+// ─── RESULT PAGE: POPULATE CARDS + LANGUAGE TOGGLE ──────────
 
-  if (padyaEl && storyEl) {
-    const padya = sessionStorage.getItem("yaksha_padya");
-    const story = sessionStorage.getItem("yaksha_story");
+const TRANSLATE_API_URL = "http://localhost:5000/api/translate";
+
+let originalKannadaStory = "";
+let englishStory = "";
+let currentLanguage = "kn";
+
+
+// Escape HTML so story text is displayed safely
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+// Display story text
+function displayStory(text) {
+
+  const storyEl = document.getElementById("story-text");
+
+  if (!storyEl) return;
+
+  storyEl.innerHTML =
+    `<p style="font-size:15px; line-height:1.8; margin:0;">
+      ${escapeHtml(text)}
+    </p>`;
+}
+
+
+// Translate Kannada story to English
+async function translateStory() {
+
+  const statusEl = document.getElementById("translate-status");
+  const englishBtn = document.getElementById("btn-en");
+
+  if (!originalKannadaStory.trim()) {
+    if (statusEl) {
+      statusEl.textContent = "No narrative available to translate.";
+    }
+    return;
+  }
+
+
+  // If English translation already exists, reuse it
+  if (englishStory) {
+    currentLanguage = "en";
+
+    displayStory(englishStory);
+
+    updateLanguageButtons();
+
+    return;
+  }
+
+
+  if (statusEl) {
+    statusEl.textContent = "Translating to English...";
+  }
+
+
+  if (englishBtn) {
+    englishBtn.disabled = true;
+  }
+
+
+  try {
+
+    const response = await fetch(
+      TRANSLATE_API_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+
+        body: JSON.stringify({
+          text: originalKannadaStory
+        })
+      }
+    );
+
+
+    const data = await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+      throw new Error(
+        data.error || "Translation failed."
+      );
+
+    }
+
+
+    englishStory = data.english || "";
+
+
+    if (!englishStory.trim()) {
+
+      throw new Error(
+        "Translation returned empty text."
+      );
+
+    }
+
+
+    currentLanguage = "en";
+
+    displayStory(englishStory);
+
+    updateLanguageButtons();
+
+
+    if (statusEl) {
+      statusEl.textContent = "";
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Translation error:",
+      error
+    );
+
+
+    currentLanguage = "kn";
+
+    displayStory(originalKannadaStory);
+
+    updateLanguageButtons();
+
+
+    if (statusEl) {
+
+      statusEl.textContent =
+        "⚠ " +
+        error.message +
+        " Showing Kannada instead.";
+
+    }
+
+  }
+
+  finally {
+
+    if (englishBtn) {
+      englishBtn.disabled = false;
+    }
+
+  }
+}
+
+
+// Update active language button
+function updateLanguageButtons() {
+
+  const btnKn = document.getElementById("btn-kn");
+  const btnEn = document.getElementById("btn-en");
+
+  if (!btnKn || !btnEn) return;
+
+
+  btnKn.classList.toggle(
+    "active",
+    currentLanguage === "kn"
+  );
+
+
+  btnEn.classList.toggle(
+    "active",
+    currentLanguage === "en"
+  );
+}
+
+
+// Initialize result page
+window.addEventListener("DOMContentLoaded", () => {
+
+  const padyaEl = document.querySelector(
+    ".card-content.yellow"
+  );
+
+  const storyEl = document.getElementById(
+    "story-text"
+  );
+
+  const btnKn = document.getElementById(
+    "btn-kn"
+  );
+
+  const btnEn = document.getElementById(
+    "btn-en"
+  );
+
+
+  // =========================================================
+  // READ EXISTING RESULTS
+  // =========================================================
+
+  const padya =
+    sessionStorage.getItem("yaksha_padya");
+
+  const story =
+    sessionStorage.getItem("yaksha_story");
+
+  const matchStatus =
+    sessionStorage.getItem("yaksha_match_status");
+
+  const confidenceRaw =
+    sessionStorage.getItem("yaksha_confidence");
+
+
+  // =========================================================
+  // RECOGNIZED PADYA
+  // =========================================================
+
+  if (padyaEl) {
 
     if (padya) {
+
       padyaEl.innerHTML = padya
-        .split('\n')
-        .map(line => `<p style="margin:6px 0; font-size:16px;">${line}</p>`)
-        .join('');
-    } else {
-      padyaEl.innerHTML = "<p>ಯಾವುದೇ ಪದ್ಯ ಸಿಗಲಿಲ್ಲ.</p>";
+        .split("\n")
+        .map(
+          line =>
+            `<p style="margin:6px 0; font-size:16px;">
+              ${escapeHtml(line)}
+            </p>`
+        )
+        .join("");
+
     }
 
-    if (story) {
-      storyEl.innerHTML = `<p style="font-size:15px; line-height:1.8;">${story}</p>`;
-    } else {
-      storyEl.innerHTML = "<p>ಡೇಟಾಸೆಟ್ ತಯಾರಾದ ನಂತರ ಕಥೆ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ.</p>";
+    else {
+
+      padyaEl.innerHTML =
+        "<p>ಯಾವುದೇ ಪದ್ಯ ಸಿಗಲಿಲ್ಲ.</p>";
+
     }
+
   }
+
+
+  // =========================================================
+  // NARRATIVE STORY
+  // =========================================================
+
+  if (storyEl) {
+
+    if (
+      matchStatus === "matched" &&
+      story
+    ) {
+
+      // Save the original Kannada story
+      originalKannadaStory = story;
+
+
+      // Confidence
+      let confidenceLine = "";
+
+
+      if (confidenceRaw) {
+
+        const pct =
+          Math.round(
+            parseFloat(confidenceRaw) * 100
+          );
+
+
+        if (!Number.isNaN(pct)) {
+
+          confidenceLine =
+            `<p style="
+              font-size:13px;
+              color:#16a34a;
+              margin:0 0 10px;
+            ">
+              ✅ Match confidence: ${pct}%
+            </p>`;
+
+        }
+
+      }
+
+
+      // Display Kannada initially
+      storyEl.innerHTML =
+        confidenceLine +
+        `<p style="
+          font-size:15px;
+          line-height:1.8;
+          margin:0;
+        ">
+          ${escapeHtml(originalKannadaStory)}
+        </p>`;
+
+
+      // =====================================================
+      // KANNADA BUTTON
+      // =====================================================
+
+      if (btnKn) {
+
+        btnKn.addEventListener(
+          "click",
+          () => {
+
+            currentLanguage = "kn";
+
+            displayStory(
+              originalKannadaStory
+            );
+
+            updateLanguageButtons();
+
+            const statusEl =
+              document.getElementById(
+                "translate-status"
+              );
+
+            if (statusEl) {
+              statusEl.textContent = "";
+            }
+
+          }
+        );
+
+      }
+
+
+      // =====================================================
+      // ENGLISH BUTTON
+      // =====================================================
+
+      if (btnEn) {
+
+        btnEn.addEventListener(
+          "click",
+          translateStory
+        );
+
+      }
+
+
+      updateLanguageButtons();
+
+    }
+
+    else if (story) {
+
+      // Rejected / low-confidence match
+
+      storyEl.innerHTML = `
+        <p style="
+          font-weight:600;
+          color:#b91c1c;
+          margin:0 0 8px;
+        ">
+          ⚠️ Padya Could Not Be Identified Reliably
+        </p>
+
+        <p style="
+          font-size:15px;
+          line-height:1.8;
+          margin:0;
+        ">
+          ${escapeHtml(story)}
+        </p>
+      `;
+
+
+      // Disable translation because this isn't
+      // a confirmed narrative from the dataset.
+
+      if (btnEn) {
+        btnEn.disabled = true;
+      }
+
+    }
+
+    else {
+
+      storyEl.innerHTML =
+        "<p>ಡೇಟಾಸೆಟ್ ತಯಾರಾದ ನಂತರ ಕಥೆ ಇಲ್ಲಿ ತೋರಿಸಲಾಗುತ್ತದೆ.</p>";
+
+
+      if (btnEn) {
+        btnEn.disabled = true;
+      }
+
+    }
+
+  }
+
 });

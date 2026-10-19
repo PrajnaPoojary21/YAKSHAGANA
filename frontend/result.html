@@ -30,15 +30,33 @@
 
   <!-- NARRATIVE STORY -->
   <div class="result-card">
+
     <div class="card-title">
       <div class="icon-box pink">
         <i class="ri-book-open-line"></i>
       </div>
       <span>Narrative Story</span>
     </div>
-    <div class="card-content red">
+
+    <!-- LANGUAGE TOGGLE -->
+    <div class="language-toggle">
+      <button id="btn-kn" class="language-btn active" type="button">
+        ಕನ್ನಡ
+      </button>
+
+      <button id="btn-en" class="language-btn" type="button">
+        English
+      </button>
+    </div>
+
+    <!-- TRANSLATION STATUS -->
+    <p id="translate-status" class="translate-status"></p>
+
+    <!-- STORY -->
+    <div class="card-content red" id="story-text">
       <!-- Populated by script.js -->
     </div>
+
   </div>
 
   <button class="primary-btn" onclick="goToUpload()">
