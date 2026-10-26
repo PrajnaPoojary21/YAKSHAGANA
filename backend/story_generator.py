@@ -1,55 +1,20 @@
-from openai import OpenAI
-from backend.config import settings
-from backend.logger import get_logger
+def generate_story(summary_text):
+    """
+    Takes the matched padya's summary text (already written, from the
+    curated dataset) and returns it as the final story output.
 
-logger = get_logger()
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    No LLM call here by design: the dataset itself is the source of
+    truth for the narrative meaning, and passing it through an external
+    model would dilute the value of the dataset that was built for
+    this project. This function only handles light formatting/cleanup.
+    """
+    if not summary_text:
+        return ""
 
-def generate_story(text: str):
-    try:
-        prompt = f"""
-You are an expert in Kannada literature and Yakshagana.
+    # Basic cleanup: normalize whitespace, strip stray leading/trailing
+    # blank lines that can come from multi-paragraph cells in the sheet.
+    lines = [line.strip() for line in summary_text.strip().splitlines()]
+    lines = [line for line in lines if line]  # drop empty lines
 
-Convert the following Yakshagana padya into a structured story.
-
-STRICT RULES:
-- DO NOT summarize
-- DO NOT omit any content
-- Preserve original meaning and cultural context
-- Convert poetic lines into clear prose
-- Maintain chronological order
-- Identify characters and actions clearly
-- Expand implicit meaning where needed
-- Use proper paragraph format
-- Make it readable like a short story
-
-INPUT:
-{text}
-
-OUTPUT:
-A complete, well-structured story in Kannada.
-"""
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3
-        )
-
-        return response.choices[0].message.content
-
-    except Exception as e:
-        logger.error(f"Story generation failed: {e}")
-        raise
-
-
-def correct_transcription(text: str):
-    prompt = f"Correct Kannada transcription errors while preserving meaning:\n{text}"
-
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0
-    )
-
-    return response.choices[0].message.content
+    story = "\n\n".join(lines)
+    return story
